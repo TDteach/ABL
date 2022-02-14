@@ -60,8 +60,8 @@ def accuracy(output, target, topk=(1,)):
 
     res = []
     for k in topk:
-        correct_k = correct[:k].view(-1).float().sum(0)
-        res.append(correct_k.mul_(100.0 / batch_size))
+        correct_k = torch.sum(correct[:k])
+        res.append(correct_k * 100.0 / batch_size )
     return res
 
 
@@ -69,4 +69,3 @@ def save_history(cls_orig_acc, clease_trig_acc, cls_trig_loss, at_trig_loss, at_
     dataframe = pd.DataFrame({'epoch': at_epoch_list, 'cls_orig_acc': cls_orig_acc, 'clease_trig_acc': clease_trig_acc,
                               'cls_trig_loss': cls_trig_loss, 'at_trig_loss': at_trig_loss})
     dataframe.to_csv(logs_dir, index=False, sep=',')
-

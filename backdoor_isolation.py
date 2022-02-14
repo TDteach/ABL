@@ -82,7 +82,7 @@ def isolate_data(opt, poisoned_data, losses_idx):
         else:
             # save the isolation examples
             np.save(data_path_isolation, isolation_examples)
-            np.save(data_path_other, isolation_examples)
+            np.save(data_path_other, other_examples)
 
     print('Finish collecting {} isolation examples: '.format(len(isolation_examples)))
     print('Finish collecting {} other examples: '.format(len(other_examples)))
@@ -234,7 +234,7 @@ def train(opt):
     print('----------- Train Initialization --------------')
     for epoch in range(0, opt.tuning_epochs):
 
-        adjust_learning_rate(optimizer, epoch, opt.lr)
+        adjust_learning_rate(optimizer, epoch, opt)
 
         # train every epoch
         if epoch == 0:
@@ -283,14 +283,14 @@ def adjust_learning_rate(optimizer, epoch, opt):
         lr = opt.lr
     else:
         lr = 0.01
-    print('epoch: {}  lr: {:.4f}'.format(epoch, lr))
+    print('epoch: {}  lr: {:.4f}'.format(epoch, opt.lr))
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
 
 def save_checkpoint(state, epoch, is_best, opt):
     if is_best:
-        filepath = os.path.join(opt.save, opt.model_name + r'-tuning_epochs{}.tar'.format(epoch))
+        filepath = os.path.join(opt.isolate_data_root, opt.model_name + r'-tuning_epochs{}.tar'.format(epoch))
         torch.save(state, filepath)
     print('[info] Finish saving the model')
 
